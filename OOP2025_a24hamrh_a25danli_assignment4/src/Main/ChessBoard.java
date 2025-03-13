@@ -1,33 +1,29 @@
 package Main;
 
 import java.awt.Color;
-import java.awt.Graphics;
+import java.awt.Graphics2D;
 
 import javax.swing.JPanel;
 
-public class ChessBoard extends JPanel{
-	private int numRows=8;
-	private int numCollumns=8;
-	private int squareSize=100;
-	boolean isWhite=true;
-	
-	public void paintComponent(Graphics g) {
-		//super.paintComponent(g);
-	
-		/*
-		for(int i=0; i < numRows; i++) {
-			System.out.println(i);
-			for(int j=0; j<numCollumns; j++) {
-				
-				//g.drawRect(i,j ,squareSize , squareSize);
-				super.paintComponent(g);
-				g.setColor(Color.BLACK);
-				g.fillRect(i, j, squareSize, squareSize);
+public class ChessBoard extends JPanel {
+	private int numRows = 8;
+	private int numColumns = 8;
+	private int squareSize = 100;
+
+	public void draw(Graphics2D g2) {
+
+		for (int y = 0; y < numColumns; y++) {
+			for (int x = 0; x < numRows; x++) {
+				if ((x + y) % 2 == 0) {
+					g2.setColor(Color.WHITE);
+				} else {
+					g2.setColor(Color.BLACK);
+				}
+
+				g2.fillRect(x *squareSize, y *squareSize , 100, 100);
+
 			}
+
 		}
-		*/
-		
-	
 	}
-	
 }
