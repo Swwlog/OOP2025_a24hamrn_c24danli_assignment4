@@ -19,6 +19,7 @@ public class Main {
 		window.setVisible(true);
 
 		gamescreen.startRefresh();
+		//test
 	}
 
 }
