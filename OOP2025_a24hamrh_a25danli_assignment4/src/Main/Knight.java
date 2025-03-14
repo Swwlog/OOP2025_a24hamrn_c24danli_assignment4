@@ -2,24 +2,22 @@ package Main;
 
 public class Knight extends Piece {
 	private String name;
-	
 
-	public Knight(int collumn, int row, Boolean isWhite) {
-		super(collumn, row, isWhite);
+	// Constructor.
+	public Knight(int collumn, int row, Boolean isWhite, int widht, int hight) {
+		super(collumn, row, isWhite, widht, hight);
 		name = "Knight";
 
-		// Sprite
+		// check what color of sprite to add Sprite
 		if (isWhite) {
 			setSprite(getSprite("/piece/white-knight"));
-		}
-		else {
+		} else {
 			setSprite(getSprite("/piece/black-knight"));
 		}
 	}
-
+	// Get name from piece
 	public String getName() {
 		return name;
 	}
-	
-	}
 
+}
