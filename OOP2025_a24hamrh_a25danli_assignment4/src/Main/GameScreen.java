@@ -54,7 +54,8 @@ public class GameScreen extends JPanel implements Runnable {
 
 	}
 
-	// test all pieces should be here add to try pieces as they are made
+	// test all pieces should be here add to try pieces as they are made. 
+	// Add widht and hight as argument for scaling
 	public void initializePieces() {
 		piecesList.add(new Knight(5, 5, true, this.width, this.hight));
 		piecesList.add(new Knight(0, 0, false, this.width, this.hight));

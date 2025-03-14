@@ -15,7 +15,7 @@ public class Knight extends Piece {
 			setSprite(getSprite("/piece/black-knight"));
 		}
 	}
-	// Get name
+	// Get name from piece
 	public String getName() {
 		return name;
 	}

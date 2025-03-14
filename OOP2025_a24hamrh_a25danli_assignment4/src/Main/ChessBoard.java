@@ -11,14 +11,15 @@ public class ChessBoard extends JPanel {
 	private int hight;
 	private int squareWidth;
 	private int squareHight;
-	// squreWidht/hight devides by 8 for scaling
+
+	// squreWidht/height divides by 8 for scaling
 	public ChessBoard(int width, int hight) {
 		this.hight = hight;
 		this.width = width;
 		this.squareWidth = this.width / 8;
 		this.squareHight = this.hight / 8;
 		setPreferredSize(new Dimension(width, hight));
-		
+
 	}
 
 	public void draw(Graphics2D g2) {
@@ -30,9 +31,7 @@ public class ChessBoard extends JPanel {
 				} else {
 					g2.setColor(Color.BLACK);
 				}
-
-				g2.fillRect(x *squareWidth, y *squareHight , squareWidth, squareHight);
-
+				g2.fillRect(x * squareWidth, y * squareHight, squareWidth, squareHight);
 			}
 
 		}
