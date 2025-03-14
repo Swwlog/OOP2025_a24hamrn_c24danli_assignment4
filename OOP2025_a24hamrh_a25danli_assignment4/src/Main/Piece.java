@@ -44,7 +44,7 @@ public class Piece {
 		return sprite;
 
 	}
-
+	// Draw Sprite
 	public void draw(Graphics2D g2) {
 		g2.drawImage(sprite, xPos, yPos, spriteWidht, spriteHeight, null);
 	}

@@ -11,7 +11,7 @@ public class ChessBoard extends JPanel {
 	private int hight;
 	private int squareWidth;
 	private int squareHight;
-	
+	// squreWidht/hight devides by 8 for scaling
 	public ChessBoard(int width, int hight) {
 		this.hight = hight;
 		this.width = width;

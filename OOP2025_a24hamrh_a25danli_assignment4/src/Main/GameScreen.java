@@ -21,40 +21,43 @@ public class GameScreen extends JPanel implements Runnable {
 		setBackground(Color.darkGray);
 		initializePieces();
 		// create and start thread for refresh
-		
+
 	}
+
 // paints board and pieces to JPanel
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		Graphics2D g2 = (Graphics2D)g;
+		Graphics2D g2 = (Graphics2D) g;
 		chessBoard.draw(g2);
-		for(Piece piece : piecesList) {
+		for (Piece piece : piecesList) {
 			piece.draw(g2);
 		}
 	}
-	//Updates changes in pieces
+
+	// Updates changes in pieces
 	public void update() {
-		
+
 	}
+
 	public void startRefresh() {
 		refresh = new Thread(this);
 		refresh.run();
 	}
+
 	// repeats Update and paintComponent to update screen !! remake or remove
 	@Override
 	public void run() {
-		for(;;) {
-			
+		for (;;) {
 			update();
-			repaint(); 
-			
+			repaint();
 		}
-		
+
 	}
+
 	// test all pieces should be here add to try pieces as they are made
 	public void initializePieces() {
-		piecesList.add(new Knight(5,5,true, this.width, this.hight));
-		piecesList.add(new Knight(0,0,false, this.width, this.hight));
+		piecesList.add(new Knight(5, 5, true, this.width, this.hight));
+		piecesList.add(new Knight(0, 0, false, this.width, this.hight));
 	}
 
 }
