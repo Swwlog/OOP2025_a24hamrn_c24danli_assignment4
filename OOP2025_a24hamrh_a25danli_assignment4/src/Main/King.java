@@ -2,35 +2,36 @@ package Main;
 
 import java.util.ArrayList;
 
-public class Knight extends Piece {
+public class King extends Piece {
 	private String name;
 
 	// Constructor.
-	public Knight(int collumn, int row, Boolean isWhite, int widht, int hight) {
+	public King(int collumn, int row, Boolean isWhite, int widht, int hight) {
 		super(collumn, row, isWhite, widht, hight);
-		name = "Knight";
+		name = "King";
 
 		// check what color of sprite to add Sprite
 		if (isWhite) {
-			setSprite(getSprite("/piece/white-knight"));
+			setSprite(getSprite("/piece/white-king"));
 		} else {
-			setSprite(getSprite("/piece/black-knight"));
+			setSprite(getSprite("/piece/black-king"));
 		}
 	}
+
 	// Get name from piece
 	public String getName() {
 		return name;
 	}
+
 	@Override
 	public boolean validMove(int newCol, int newRow, ArrayList<Piece> pieceList) {
-		if(squareOccupiedSameColor( newCol, newRow,pieceList)) {
+		if (squareOccupiedSameColor(newCol, newRow, pieceList)) {
 			return false;
-		}
-		else if ((Math.abs((getCollumn()-newCol)*(getRow()-newRow))==2)){
+		} else if ((Math.abs((getCollumn() - newCol) * (getRow() - newRow)) == 1)
+				|| ((Math.abs((getCollumn() - newCol)) + (Math.abs(getRow() - newRow))) == 1)) {
 			return true;
 		}
 		return false;
 	}
-	
 
 }

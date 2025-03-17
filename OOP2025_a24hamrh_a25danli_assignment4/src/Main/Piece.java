@@ -4,6 +4,7 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 
@@ -44,8 +45,56 @@ public class Piece {
 		return sprite;
 
 	}
+
 	// Draw sprite
 	public void draw(Graphics2D g2) {
 		g2.drawImage(sprite, xPos, yPos, spriteWidht, spriteHeight, null);
+	}
+
+	public int getCollumn() {
+		return collumn;
+	}
+
+	public int getRow() {
+		return row;
+	}
+
+	public boolean getIsWhite() {
+		return isWhite;
+
+	}
+
+	public boolean validMove(int newCol, int newRow, ArrayList<Piece> pieceList) {
+
+		return false;
+	}
+
+	public boolean squareOccupiedSameColor(int newCol, int newRow, ArrayList<Piece> pieceList) {
+		for (Piece piece : pieceList) {
+			if (piece.getCollumn() == newCol && piece.getRow() == newRow && piece.getIsWhite() == this.isWhite) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public void capturePiece(int newCol, int newRow, ArrayList<Piece> pieceList) {
+		for (Piece piece : pieceList) {
+			if (piece.getCollumn() == newCol && piece.getRow() == newRow && piece.getIsWhite() != this.isWhite) {
+				pieceList.remove(piece);
+				break;
+			}
+		}
+	}
+
+	public void movePiece(int collumn, int row) {
+		this.collumn = collumn;
+		this.row = row;
+		uppdateXYPos();
+	}
+
+	public void uppdateXYPos() {
+		xPos = collumn * spriteWidht;
+		yPos = row * spriteHeight;
 	}
 }

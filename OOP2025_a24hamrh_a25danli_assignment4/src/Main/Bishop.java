@@ -2,19 +2,19 @@ package Main;
 
 import java.util.ArrayList;
 
-public class Knight extends Piece {
+public class Bishop extends Piece {
 	private String name;
 
 	// Constructor.
-	public Knight(int collumn, int row, Boolean isWhite, int widht, int hight) {
+	public Bishop(int collumn, int row, Boolean isWhite, int widht, int hight) {
 		super(collumn, row, isWhite, widht, hight);
-		name = "Knight";
+		name = "Bishop";
 
 		// check what color of sprite to add Sprite
 		if (isWhite) {
-			setSprite(getSprite("/piece/white-knight"));
+			setSprite(getSprite("/piece/white-bishop"));
 		} else {
-			setSprite(getSprite("/piece/black-knight"));
+			setSprite(getSprite("/piece/black-bishop"));
 		}
 	}
 	// Get name from piece
@@ -26,7 +26,7 @@ public class Knight extends Piece {
 		if(squareOccupiedSameColor( newCol, newRow,pieceList)) {
 			return false;
 		}
-		else if ((Math.abs((getCollumn()-newCol)*(getRow()-newRow))==2)){
+		else if (Math.abs(getCollumn()-newCol)==(Math.abs(getRow()-newRow))){
 			return true;
 		}
 		return false;
@@ -34,3 +34,4 @@ public class Knight extends Piece {
 	
 
 }
+
