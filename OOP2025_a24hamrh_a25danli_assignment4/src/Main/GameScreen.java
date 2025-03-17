@@ -88,7 +88,7 @@ public class GameScreen extends JPanel implements Runnable, MouseInputListener {
 			pieceList.add(new Pawn(i, 6, true, this.width,this.hight));
 		}
 		pieceList.add(new Pawn(4, 4, true, this.width,this.hight));
-		pieceList.add(new Pawn(5, 5, false, this.width,this.hight));
+		pieceList.add(new Pawn(7, 5, false, this.width,this.hight));
 		//Black Pieces
 		pieceList.add(new Rook(7, 0, false, this.width, this.hight));
 		pieceList.add(new Rook(0, 0, false, this.width, this.hight));
