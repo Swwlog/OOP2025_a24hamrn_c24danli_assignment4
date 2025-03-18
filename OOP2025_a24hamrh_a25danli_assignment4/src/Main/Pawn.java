@@ -25,13 +25,17 @@ public class Pawn extends Piece {
 
 	@Override
 	public boolean validMove(int newCol, int newRow, ArrayList<Piece> pieceList) {
-		if (squareOccupiedSameColor(newCol, newRow, pieceList)) {
+		if (squareOccupiedSameColor(newCol, newRow, pieceList)) { 
 			return false;
 		} 
-		else if (getIsWhite() && ((this.getRow()-newRow)==1)&& this.getCollumn()==newCol) {
+		else if ((getIsWhite() && ((this.getRow()-newRow)==1)&& this.getCollumn()==newCol)&&squareOccupiedOppositeColor(newCol, newRow, pieceList)==false
+		|| (getIsWhite() &&squareOccupiedOppositeColor(newCol, newRow, pieceList) && ((this.getRow()-newRow)==1)&& (Math.abs(getCollumn()-newCol)==1))
+		|| getHasMoved()==false && ((getIsWhite() && ((this.getRow()-newRow)==2)&& this.getCollumn()==newCol))){
 			return true;
 		}
-		else if (getIsWhite()==false && ((this.getRow()-newRow)==-1)&& this.getCollumn()==newCol) {
+		else if ((getIsWhite()==false && ((this.getRow()-newRow)==-1)&& this.getCollumn()==newCol)&&squareOccupiedOppositeColor(newCol, newRow, pieceList)==false
+			|| (getIsWhite()==false && squareOccupiedOppositeColor(newCol, newRow, pieceList) && ((this.getRow()-newRow)==-1)&& (Math.abs(getCollumn()-newCol)==1))
+			||getHasMoved()==false && ((getIsWhite()==false && ((this.getRow()-newRow)==-2)&& this.getCollumn()==newCol))){
 			return true;
 		}
 		return false;

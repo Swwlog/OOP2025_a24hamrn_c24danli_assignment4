@@ -17,6 +17,7 @@ public class GameScreen extends JPanel implements Runnable, MouseInputListener {
 	private Thread refresh;
 	private ArrayList<Piece> pieceList = new ArrayList<>();
 	private Piece activePiece = null;
+	private boolean whitesTurn=true;
 
 	public GameScreen() {
 		chessBoard = new ChessBoard(this.width, this.hight);
@@ -37,8 +38,8 @@ public class GameScreen extends JPanel implements Runnable, MouseInputListener {
 		if (activePiece != null) {
 			for (int y = 0; y < 8; y++) {
 				for (int x = 0; x < 8; x++) {
-					if (activePiece.validMove(x, y,pieceList) == true) {
-						
+					if (activePiece.validMove(x, y, pieceList) == true) {
+
 						g2.setColor(Color.GREEN);
 						g2.fillRect(x * 100, y * 100, 100, 100);
 
@@ -75,7 +76,7 @@ public class GameScreen extends JPanel implements Runnable, MouseInputListener {
 	// test all pieces should be here add to try pieces as they are made.
 	// Add widht and hight as argument for scaling
 	public void initializePieces() {
-		//White Pieces
+		// White Pieces
 		pieceList.add(new Rook(7, 7, true, this.width, this.hight));
 		pieceList.add(new Rook(0, 7, true, this.width, this.hight));
 		pieceList.add(new Knight(1, 7, true, this.width, this.hight));
@@ -84,12 +85,11 @@ public class GameScreen extends JPanel implements Runnable, MouseInputListener {
 		pieceList.add(new Bishop(5, 7, true, this.width, this.hight));
 		pieceList.add(new King(4, 7, true, this.width, this.hight));
 		pieceList.add(new Queen(3, 7, true, this.width, this.hight));
-		for(int i=0;i<4;i++) {
-			pieceList.add(new Pawn(i, 6, true, this.width,this.hight));
+		for (int i = 0; i < 8; i++) {
+			pieceList.add(new Pawn(i, 6, true, this.width, this.hight));
 		}
-		pieceList.add(new Pawn(4, 4, true, this.width,this.hight));
-		pieceList.add(new Pawn(7, 5, false, this.width,this.hight));
-		//Black Pieces
+		
+		// Black Pieces
 		pieceList.add(new Rook(7, 0, false, this.width, this.hight));
 		pieceList.add(new Rook(0, 0, false, this.width, this.hight));
 		pieceList.add(new Knight(1, 0, false, this.width, this.hight));
@@ -98,24 +98,45 @@ public class GameScreen extends JPanel implements Runnable, MouseInputListener {
 		pieceList.add(new Bishop(5, 0, false, this.width, this.hight));
 		pieceList.add(new King(4, 0, false, this.width, this.hight));
 		pieceList.add(new Queen(3, 0, false, this.width, this.hight));
-		for(int i=0;i<4;i++) {
-			pieceList.add(new Pawn(i, 1, false, this.width,this.hight));
+		for (int i = 0; i < 8; i++) {
+			pieceList.add(new Pawn(i, 1, false, this.width, this.hight));
+		}
 	}
-	}
+
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		System.out.println(e.getX() / 100);
 		System.out.println(e.getY() / 100);
-		if (activePiece != null && activePiece.validMove(e.getX()/100,e.getY()/100, pieceList)) {
-			
-			activePiece.movePiece(e.getX() / 100, e.getY() / 100);
-			activePiece.capturePiece(e.getX()/100, e.getY()/100, pieceList);
+		if (activePiece != null && activePiece.validMove(e.getX() / 100, e.getY() / 100, pieceList)) {
+
+			activePiece.movePiece(e.getX() / 100, e.getY() / 100, pieceList);
+			activePiece.capturePiece(e.getX() / 100, e.getY() / 100, pieceList);
 			activePiece = null;
-		} else if (activePiece == null) {
+			if(whitesTurn==true) {
+				whitesTurn=false;
+			}
+				else {
+					whitesTurn=true;
+				}
+			}
+		
+	
+
+		else if (activePiece == null) {
 			for (Piece piece : pieceList) {
-				if ((piece.getCollumn() == e.getX() / 100) && piece.getRow() == e.getY() / 100) {
+				if (((piece.getCollumn() == e.getX() / 100) && piece.getRow() == e.getY() / 100)&&piece.getIsWhite()==whitesTurn) {
 					activePiece = piece;
 					System.out.println("piece choosen");
+
+				}
+			}
+		} 
+		else {
+			for (Piece piece : pieceList) {
+				if ((piece.getCollumn() == e.getX() / 100) && piece.getRow() == e.getY() / 100) {
+					if (piece.getIsWhite() == activePiece.getIsWhite()) {
+						activePiece = piece;
+					}
 
 				}
 			}

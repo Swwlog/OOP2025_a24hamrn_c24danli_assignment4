@@ -26,8 +26,14 @@ public class Queen extends Piece {
 		if(squareOccupiedSameColor( newCol, newRow,pieceList)) {
 			return false;
 		}
-		else if ((Math.abs((getCollumn()-newCol)*(getRow()-newRow))==0)
-				||(Math.abs(getCollumn()-newCol)==(Math.abs(getRow()-newRow)))){
+		
+		else if ((Math.abs((getCollumn()-newCol)*(getRow()-newRow))==0)){
+			if(targetBlockedStraitLines(newCol, newRow, pieceList)==false) {
+				return true;
+			}
+		}
+		else if (Math.abs(getCollumn()-newCol)==(Math.abs(getRow()-newRow))){
+			if(targetBlockedDiagonalLines(newCol, newRow, pieceList)==false)
 			return true;
 		}
 		return false;

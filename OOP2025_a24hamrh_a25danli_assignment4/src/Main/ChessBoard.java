@@ -29,7 +29,7 @@ public class ChessBoard extends JPanel {
 				if ((x + y) % 2 == 0) {
 					g2.setColor(Color.WHITE);
 				} else {
-					g2.setColor(Color.BLACK);
+					g2.setColor(new Color(125, 135, 150));
 				}
 				g2.fillRect(x * squareWidth, y * squareHight, squareWidth, squareHight);
 			}

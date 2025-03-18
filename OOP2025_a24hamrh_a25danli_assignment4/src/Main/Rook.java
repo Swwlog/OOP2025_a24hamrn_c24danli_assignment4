@@ -23,7 +23,7 @@ public class Rook extends Piece {
 	}
 	@Override
 	public boolean validMove(int newCol, int newRow, ArrayList<Piece> pieceList) {
-		if(squareOccupiedSameColor( newCol, newRow,pieceList)) {
+		if(squareOccupiedSameColor( newCol, newRow,pieceList)||targetBlockedStraitLines(newCol, newRow, pieceList)) {
 			return false;
 		}
 		else if ((Math.abs((getCollumn()-newCol)*(getRow()-newRow))==0)){
