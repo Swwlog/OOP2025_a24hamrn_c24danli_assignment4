@@ -212,5 +212,6 @@ public class Piece {
 
 		}
 		return false;
-	}
+	}	
+
 }

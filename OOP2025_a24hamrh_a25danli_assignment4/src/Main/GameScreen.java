@@ -16,8 +16,11 @@ public class GameScreen extends JPanel implements Runnable, MouseInputListener {
 	private int hight = 800;
 	private Thread refresh;
 	private ArrayList<Piece> pieceList = new ArrayList<>();
-	private Piece activePiece = null;
-	private boolean whitesTurn=true;
+	private ArrayList<Piece> pieceListCopy = new ArrayList<>();
+	private Piece activePiece= null;
+	private boolean whitesTurn = true;
+	private Piece checkingPiece =null;
+	private Piece activePieceCopy=null;
 
 	public GameScreen() {
 		chessBoard = new ChessBoard(this.width, this.hight);
@@ -88,7 +91,7 @@ public class GameScreen extends JPanel implements Runnable, MouseInputListener {
 		for (int i = 0; i < 8; i++) {
 			pieceList.add(new Pawn(i, 6, true, this.width, this.hight));
 		}
-		
+
 		// Black Pieces
 		pieceList.add(new Rook(7, 0, false, this.width, this.hight));
 		pieceList.add(new Rook(0, 0, false, this.width, this.hight));
@@ -103,35 +106,71 @@ public class GameScreen extends JPanel implements Runnable, MouseInputListener {
 		}
 	}
 
+	public void copyList(ArrayList<Piece> copyFrom, ArrayList<Piece> copyTo) {
+		copyTo.clear();
+		for (Piece piece : copyFrom) {
+			switch(piece.getName()) {
+			case "Rook":			
+				copyTo.add(new Rook(piece.getCollumn(), piece.getRow(), piece.getIsWhite(), this.width, this.hight));
+				break;
+			case "Pawn":			
+				copyTo.add(new Pawn(piece.getCollumn(), piece.getRow(), piece.getIsWhite(), this.width, this.hight));
+				break;
+			case "Knight":			
+				copyTo.add(new Knight(piece.getCollumn(), piece.getRow(), piece.getIsWhite(), this.width, this.hight));
+				break;
+			case "Queen":			
+				copyTo.add(new Queen(piece.getCollumn(), piece.getRow(), piece.getIsWhite(), this.width, this.hight));
+				break;
+			case "King":			
+				copyTo.add(new King(piece.getCollumn(), piece.getRow(), piece.getIsWhite(), this.width, this.hight));
+				break;
+			case "Bishop":			
+				copyTo.add(new Bishop(piece.getCollumn(), piece.getRow(), piece.getIsWhite(), this.width, this.hight));
+				break;
+			}
+		}
+		for(Piece piece:copyTo) {
+			if(piece.getCollumn()== activePiece.getCollumn() && piece.getRow()== activePiece.getRow()) {
+				activePieceCopy=piece;
+			}
+		}
+	}
+
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		System.out.println(e.getX() / 100);
 		System.out.println(e.getY() / 100);
 		if (activePiece != null && activePiece.validMove(e.getX() / 100, e.getY() / 100, pieceList)) {
-
-			activePiece.movePiece(e.getX() / 100, e.getY() / 100, pieceList);
-			activePiece.capturePiece(e.getX() / 100, e.getY() / 100, pieceList);
-			activePiece = null;
-			if(whitesTurn==true) {
-				whitesTurn=false;
-			}
-				else {
-					whitesTurn=true;
+			copyList(pieceList,pieceListCopy);
+			activePieceCopy.movePiece(e.getX() / 100, e.getY() / 100, pieceListCopy);
+			activePieceCopy.capturePiece(e.getX() / 100, e.getY() / 100, pieceListCopy);
+		//	activePiece.movePiece(e.getX() / 100, e.getY() / 100, pieceList);
+		//	activePiece.capturePiece(e.getX() / 100, e.getY() / 100, pieceList);
+			if (isChecked(pieceListCopy) != true) {
+				//copyList(pieceListCopy,pieceList);
+				activePiece.movePiece(e.getX() / 100, e.getY() / 100, pieceList);
+				activePiece.capturePiece(e.getX() / 100, e.getY() / 100, pieceList);
+				activePiece = null;
+				if (whitesTurn == true) {
+					whitesTurn = false;
+				} else {
+					whitesTurn = true;
 				}
 			}
-		
-	
+			
+		}
 
 		else if (activePiece == null) {
 			for (Piece piece : pieceList) {
-				if (((piece.getCollumn() == e.getX() / 100) && piece.getRow() == e.getY() / 100)&&piece.getIsWhite()==whitesTurn) {
+				if (((piece.getCollumn() == e.getX() / 100) && piece.getRow() == e.getY() / 100)
+						&& piece.getIsWhite() == whitesTurn) {
 					activePiece = piece;
 					System.out.println("piece choosen");
 
 				}
 			}
-		} 
-		else {
+		} else {
 			for (Piece piece : pieceList) {
 				if ((piece.getCollumn() == e.getX() / 100) && piece.getRow() == e.getY() / 100) {
 					if (piece.getIsWhite() == activePiece.getIsWhite()) {
@@ -178,5 +217,35 @@ public class GameScreen extends JPanel implements Runnable, MouseInputListener {
 		// TODO Auto-generated method stub
 
 	}
+	public boolean isChecked( ArrayList<Piece> list) {
+		for (Piece king : list) {
+			if (king.getName() == "King" && king.getIsWhite() == whitesTurn) {
+				for(Piece piece:list) {
+						if (piece.getIsWhite() != whitesTurn && piece.validMove(king.getCollumn(), king.getRow(), list) == true) {
+							System.out.println("King Checked");
+							checkingPiece=activePiece;
+							return true;
+						}
 
-}
+					}
+				}
+			}
+		return false;
+	}
+
+	/*public void isChecked(Piece activePiece, ArrayList<Piece> pieceList) {
+		for (Piece king : pieceList) {
+			if (king.getName() == "King" && king.getIsWhite() != activePiece.getIsWhite()) {
+				
+						if (activePiece.validMove(king.getCollumn(), king.getRow(), pieceList) == true) {
+							System.out.println("King Checked");
+							checkingPiece=activePiece;
+							break;
+						}
+
+					}
+				}
+			} */
+		
+	}
+

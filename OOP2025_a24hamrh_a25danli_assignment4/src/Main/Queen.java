@@ -23,6 +23,7 @@ public class Queen extends Piece {
 	}
 	@Override
 	public boolean validMove(int newCol, int newRow, ArrayList<Piece> pieceList) {
+		
 		if(squareOccupiedSameColor( newCol, newRow,pieceList)) {
 			return false;
 		}
