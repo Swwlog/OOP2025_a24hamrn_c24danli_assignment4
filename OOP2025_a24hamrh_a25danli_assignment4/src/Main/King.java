@@ -31,7 +31,7 @@ public class King extends Piece {
 				|| ((Math.abs((getCollumn() - newCol)) + (Math.abs(getRow() - newRow))) == 1)) {
 			return true;
 		}
-		// casle
+		// Castle to the right!!
 		else if (!getHasMoved() && (getCollumn() - newCol) == -2 && (getRow() == newRow)
 				&& !targetBlockedStraitLines(newCol, newRow, pieceList)) {
 			for (Piece piece : pieceList) {
@@ -48,8 +48,9 @@ public class King extends Piece {
 			}
 			return false;
 		}
+		// Castle to the left!!
 		else if (!getHasMoved() && (getCollumn() - newCol) == 2 && (getRow() == newRow)
-				&& !targetBlockedStraitLines(newCol-1, newRow, pieceList)) {
+				&& !targetBlockedStraitLines(newCol-2, newRow, pieceList)) {
 			for (Piece piece : pieceList) {
 				if ((piece.getCollumn() == getCollumn() + -4) && piece.getRow() == getRow() && !piece.getHasMoved()) {
 					for (Piece piece2 : pieceList) {

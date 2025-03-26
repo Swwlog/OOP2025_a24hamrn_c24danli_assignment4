@@ -19,7 +19,6 @@ public class GameScreen extends JPanel implements Runnable, MouseInputListener {
 	private ArrayList<Piece> pieceListCopy = new ArrayList<>();
 	private Piece activePiece = null;
 	private boolean whitesTurn = true;
-	private Piece checkingPiece = null;
 	private Piece activePieceCopy = null;
 
 	public GameScreen() {
@@ -42,10 +41,10 @@ public class GameScreen extends JPanel implements Runnable, MouseInputListener {
 			for (int y = 0; y < 8; y++) {
 				for (int x = 0; x < 8; x++) {
 					if (activePiece.validMove(x, y, pieceList) == true) {
-
-						g2.setColor(Color.GREEN);
-						g2.fillRect(x * 100, y * 100, 100, 100);
-
+						if (simulateMoveLegal(x, y)) {
+							g2.setColor(Color.GREEN);
+							g2.fillRect(x * 100, y * 100, 100, 100);
+						}
 					}
 
 				}
@@ -56,21 +55,15 @@ public class GameScreen extends JPanel implements Runnable, MouseInputListener {
 		}
 	}
 
-	// Updates changes in pieces
-	public void update() {
-
-	}
-
 	public void startRefresh() {
 		refresh = new Thread(this);
 		refresh.run();
 	}
 
-	// repeats Update and paintComponent to update screen !! remake or remove
+	// repeats paintComponent to update screen !! remake or remove
 	@Override
 	public void run() {
-		for (;;) {
-			update();
+		while (true) {
 			repaint();
 		}
 
@@ -142,11 +135,8 @@ public class GameScreen extends JPanel implements Runnable, MouseInputListener {
 		System.out.println(e.getX() / 100);
 		System.out.println(e.getY() / 100);
 		if (activePiece != null && activePiece.validMove(e.getX() / 100, e.getY() / 100, pieceList)) {
-			copyList(pieceList, pieceListCopy);
-			activePieceCopy.movePiece(e.getX() / 100, e.getY() / 100, pieceListCopy);
-			activePieceCopy.capturePiece(e.getX() / 100, e.getY() / 100, pieceListCopy);
 
-			if (isChecked(pieceListCopy) != true) {
+			if (simulateMoveLegal(e.getX() / 100, e.getY() / 100)) {
 
 				activePiece.movePiece(e.getX() / 100, e.getY() / 100, pieceList);
 				activePiece.capturePiece(e.getX() / 100, e.getY() / 100, pieceList);
@@ -155,7 +145,7 @@ public class GameScreen extends JPanel implements Runnable, MouseInputListener {
 				} else {
 					whitesTurn = true;
 				}
-				checkmate(pieceList);
+				checkmate();
 				activePiece = null;
 			}
 
@@ -182,32 +172,35 @@ public class GameScreen extends JPanel implements Runnable, MouseInputListener {
 		}
 	}
 
-	public void checkmate(ArrayList<Piece> pieceList) {
-		if( activePiece != null) {
-	
+	public boolean checkmate() {
+		if (!isChecked(pieceList)) {
+			System.out.println("Not in check stage 1");
+			return false;
+		}
+
 		for (Piece piece : pieceList) {
-			activePieceCopy=piece;
-			if (activePieceCopy.getIsWhite() == whitesTurn) {
-				System.out.println(activePieceCopy.getName()+activePieceCopy.getIsWhite());
+			activePiece = piece;
+			if (piece.getIsWhite() == whitesTurn) {
 				for (int y = 0; y < 8; y++) {
 					for (int x = 0; x < 8; x++) {
-						if (piece.validMove(x ,y, pieceList)) {
-							copyList(pieceList, pieceListCopy);
-							activePieceCopy.movePiece(x, y , pieceListCopy);
-							activePieceCopy.capturePiece(x ,y, pieceListCopy);
+						if (piece.validMove(x, y, pieceList) == true) {
+							if (simulateMoveLegal(x, y)) {
 
-							if (isChecked(pieceListCopy) != true) {
-								System.out.println("TEST");
-								return;
+								System.out.println(activePieceCopy.getName() + activePieceCopy.getIsWhite());
+								System.out.println("" + x + y);
+								System.out.println("can move");
+								return false;
 							}
+
 						}
 					}
 				}
 			}
 		}
 		System.out.println("YOU WON");
-	} 
+		return true;
 	}
+
 	@Override
 	public void mousePressed(MouseEvent e) {
 		// TODO Auto-generated method stub
@@ -244,33 +237,33 @@ public class GameScreen extends JPanel implements Runnable, MouseInputListener {
 
 	}
 
-	public boolean isChecked(ArrayList<Piece> list) {
-		for (Piece king : list) {
-			if (king.getName() == "King" && king.getIsWhite() == whitesTurn) {
-				for (Piece piece : list) {
-					if (piece.getIsWhite() != whitesTurn
-							&& piece.validMove(king.getCollumn(), king.getRow(), list) == true) {
-						System.out.println("King Checked");
-						checkingPiece = activePiece;
-						return true;
-					}
+	public boolean simulateMoveLegal(int col, int row) {
+		copyList(pieceList, pieceListCopy);
+		activePieceCopy.movePiece(col, row, pieceListCopy);
+		activePieceCopy.capturePiece(col, row, pieceListCopy);
 
-				}
-			}
+		if (!isChecked(pieceListCopy)) {
+			return true;
 		}
 		return false;
 	}
 
-	/*
-	 * public void isChecked(Piece activePiece, ArrayList<Piece> pieceList) { for
-	 * (Piece king : pieceList) { if (king.getName() == "King" && king.getIsWhite()
-	 * != activePiece.getIsWhite()) {
-	 * 
-	 * if (activePiece.validMove(king.getCollumn(), king.getRow(), pieceList) ==
-	 * true) { System.out.println("King Checked"); checkingPiece=activePiece; break;
-	 * }
-	 * 
-	 * } } }
-	 */
+	public boolean isChecked(ArrayList<Piece> list) {
+		Piece king = null;
+		for (Piece piece : list) {
+			if (piece.getName() == "King" && piece.getIsWhite() == whitesTurn) {
+				king = piece;
+				break;
+			}
+		}
+		for (Piece piece : list) {
+			if (piece.getIsWhite() != whitesTurn && piece.validMove(king.getCollumn(), king.getRow(), list) == true) {
+				System.out.println("King Checked");
+				return true;
+			}
+
+		}
+		return false;
+	}
 
 }
