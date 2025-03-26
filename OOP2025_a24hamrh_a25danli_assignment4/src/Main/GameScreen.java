@@ -17,10 +17,10 @@ public class GameScreen extends JPanel implements Runnable, MouseInputListener {
 	private Thread refresh;
 	private ArrayList<Piece> pieceList = new ArrayList<>();
 	private ArrayList<Piece> pieceListCopy = new ArrayList<>();
-	private Piece activePiece= null;
+	private Piece activePiece = null;
 	private boolean whitesTurn = true;
-	private Piece checkingPiece =null;
-	private Piece activePieceCopy=null;
+	private Piece checkingPiece = null;
+	private Piece activePieceCopy = null;
 
 	public GameScreen() {
 		chessBoard = new ChessBoard(this.width, this.hight);
@@ -109,30 +109,30 @@ public class GameScreen extends JPanel implements Runnable, MouseInputListener {
 	public void copyList(ArrayList<Piece> copyFrom, ArrayList<Piece> copyTo) {
 		copyTo.clear();
 		for (Piece piece : copyFrom) {
-			switch(piece.getName()) {
-			case "Rook":			
+			switch (piece.getName()) {
+			case "Rook":
 				copyTo.add(new Rook(piece.getCollumn(), piece.getRow(), piece.getIsWhite(), this.width, this.hight));
 				break;
-			case "Pawn":			
+			case "Pawn":
 				copyTo.add(new Pawn(piece.getCollumn(), piece.getRow(), piece.getIsWhite(), this.width, this.hight));
 				break;
-			case "Knight":			
+			case "Knight":
 				copyTo.add(new Knight(piece.getCollumn(), piece.getRow(), piece.getIsWhite(), this.width, this.hight));
 				break;
-			case "Queen":			
+			case "Queen":
 				copyTo.add(new Queen(piece.getCollumn(), piece.getRow(), piece.getIsWhite(), this.width, this.hight));
 				break;
-			case "King":			
+			case "King":
 				copyTo.add(new King(piece.getCollumn(), piece.getRow(), piece.getIsWhite(), this.width, this.hight));
 				break;
-			case "Bishop":			
+			case "Bishop":
 				copyTo.add(new Bishop(piece.getCollumn(), piece.getRow(), piece.getIsWhite(), this.width, this.hight));
 				break;
 			}
 		}
-		for(Piece piece:copyTo) {
-			if(piece.getCollumn()== activePiece.getCollumn() && piece.getRow()== activePiece.getRow()) {
-				activePieceCopy=piece;
+		for (Piece piece : copyTo) {
+			if (piece.getCollumn() == activePiece.getCollumn() && piece.getRow() == activePiece.getRow()) {
+				activePieceCopy = piece;
 			}
 		}
 	}
@@ -142,23 +142,23 @@ public class GameScreen extends JPanel implements Runnable, MouseInputListener {
 		System.out.println(e.getX() / 100);
 		System.out.println(e.getY() / 100);
 		if (activePiece != null && activePiece.validMove(e.getX() / 100, e.getY() / 100, pieceList)) {
-			copyList(pieceList,pieceListCopy);
+			copyList(pieceList, pieceListCopy);
 			activePieceCopy.movePiece(e.getX() / 100, e.getY() / 100, pieceListCopy);
 			activePieceCopy.capturePiece(e.getX() / 100, e.getY() / 100, pieceListCopy);
-		//	activePiece.movePiece(e.getX() / 100, e.getY() / 100, pieceList);
-		//	activePiece.capturePiece(e.getX() / 100, e.getY() / 100, pieceList);
+
 			if (isChecked(pieceListCopy) != true) {
-				//copyList(pieceListCopy,pieceList);
+
 				activePiece.movePiece(e.getX() / 100, e.getY() / 100, pieceList);
 				activePiece.capturePiece(e.getX() / 100, e.getY() / 100, pieceList);
-				activePiece = null;
 				if (whitesTurn == true) {
 					whitesTurn = false;
 				} else {
 					whitesTurn = true;
 				}
+				checkmate(pieceList);
+				activePiece = null;
 			}
-			
+
 		}
 
 		else if (activePiece == null) {
@@ -182,6 +182,32 @@ public class GameScreen extends JPanel implements Runnable, MouseInputListener {
 		}
 	}
 
+	public void checkmate(ArrayList<Piece> pieceList) {
+		if( activePiece != null) {
+	
+		for (Piece piece : pieceList) {
+			activePieceCopy=piece;
+			if (activePieceCopy.getIsWhite() == whitesTurn) {
+				System.out.println(activePieceCopy.getName()+activePieceCopy.getIsWhite());
+				for (int y = 0; y < 8; y++) {
+					for (int x = 0; x < 8; x++) {
+						if (piece.validMove(x ,y, pieceList)) {
+							copyList(pieceList, pieceListCopy);
+							activePieceCopy.movePiece(x, y , pieceListCopy);
+							activePieceCopy.capturePiece(x ,y, pieceListCopy);
+
+							if (isChecked(pieceListCopy) != true) {
+								System.out.println("TEST");
+								return;
+							}
+						}
+					}
+				}
+			}
+		}
+		System.out.println("YOU WON");
+	} 
+	}
 	@Override
 	public void mousePressed(MouseEvent e) {
 		// TODO Auto-generated method stub
@@ -217,35 +243,34 @@ public class GameScreen extends JPanel implements Runnable, MouseInputListener {
 		// TODO Auto-generated method stub
 
 	}
-	public boolean isChecked( ArrayList<Piece> list) {
+
+	public boolean isChecked(ArrayList<Piece> list) {
 		for (Piece king : list) {
 			if (king.getName() == "King" && king.getIsWhite() == whitesTurn) {
-				for(Piece piece:list) {
-						if (piece.getIsWhite() != whitesTurn && piece.validMove(king.getCollumn(), king.getRow(), list) == true) {
-							System.out.println("King Checked");
-							checkingPiece=activePiece;
-							return true;
-						}
-
+				for (Piece piece : list) {
+					if (piece.getIsWhite() != whitesTurn
+							&& piece.validMove(king.getCollumn(), king.getRow(), list) == true) {
+						System.out.println("King Checked");
+						checkingPiece = activePiece;
+						return true;
 					}
+
 				}
 			}
+		}
 		return false;
 	}
 
-	/*public void isChecked(Piece activePiece, ArrayList<Piece> pieceList) {
-		for (Piece king : pieceList) {
-			if (king.getName() == "King" && king.getIsWhite() != activePiece.getIsWhite()) {
-				
-						if (activePiece.validMove(king.getCollumn(), king.getRow(), pieceList) == true) {
-							System.out.println("King Checked");
-							checkingPiece=activePiece;
-							break;
-						}
+	/*
+	 * public void isChecked(Piece activePiece, ArrayList<Piece> pieceList) { for
+	 * (Piece king : pieceList) { if (king.getName() == "King" && king.getIsWhite()
+	 * != activePiece.getIsWhite()) {
+	 * 
+	 * if (activePiece.validMove(king.getCollumn(), king.getRow(), pieceList) ==
+	 * true) { System.out.println("King Checked"); checkingPiece=activePiece; break;
+	 * }
+	 * 
+	 * } } }
+	 */
 
-					}
-				}
-			} */
-		
-	}
-
+}

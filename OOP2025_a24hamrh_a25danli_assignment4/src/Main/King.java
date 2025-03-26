@@ -33,15 +33,38 @@ public class King extends Piece {
 		}
 		// casle
 		else if (!getHasMoved() && (getCollumn() - newCol) == -2 && (getRow() == newRow)
-				&& !targetBlockedStraitLines(newRow, newRow, pieceList)) {
+				&& !targetBlockedStraitLines(newCol, newRow, pieceList)) {
 			for (Piece piece : pieceList) {
-				if ((piece.getCollumn() == getCollumn() + 3) && piece.getRow() == getRow()
-						&& !piece.getHasMoved()) {
+				if ((piece.getCollumn() == getCollumn() + 3) && piece.getRow() == getRow() && !piece.getHasMoved()) {
+					for (Piece piece2 : pieceList) {
+						if (piece2.getIsWhite() != getIsWhite())
+							for (int i = 0; i < 4; i++) {
+								if (piece2.validMove(getCollumn() + i, getRow(), pieceList) == true)
+									return false;
+							}
+					}
 					return true;
 				}
 			}
+			return false;
+		}
+		else if (!getHasMoved() && (getCollumn() - newCol) == 2 && (getRow() == newRow)
+				&& !targetBlockedStraitLines(newCol-1, newRow, pieceList)) {
+			for (Piece piece : pieceList) {
+				if ((piece.getCollumn() == getCollumn() + -4) && piece.getRow() == getRow() && !piece.getHasMoved()) {
+					for (Piece piece2 : pieceList) {
+						if (piece2.getIsWhite() != getIsWhite())
+							for (int i = 0; i < 5; i++) {
+								if (piece2.validMove(getCollumn() - i, getRow(), pieceList) == true)
+									return false;
+							}
+					}
+					return true;
+				}
+			}
+			return false;
 		}
 		return false;
-	}
 
+	}
 }

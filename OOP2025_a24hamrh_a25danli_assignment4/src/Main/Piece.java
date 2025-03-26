@@ -107,11 +107,19 @@ public class Piece {
 	}
 
 	public void movePiece(int collumn, int row,ArrayList<Piece> pieceList) {
+		if (this.getName()=="King" && this.collumn-collumn==-2) {
+			castle(pieceList,true);
+		}
+		if (this.getName()=="King" && this.collumn-collumn==2) {
+			castle(pieceList,false);
+		}
+		
 		this.collumn = collumn;
 		this.row = row;
 		this.hasMoved=true;
 		if(this.getName()=="Pawn"&&(this.getRow()==7||this.getRow()==0)) {
 		promotePawn(pieceList);
+		// if king move +/- 2  run castle
 		}
 		uppdateXYPos();
 	}
@@ -119,6 +127,26 @@ public class Piece {
 	public void uppdateXYPos() {
 		xPos = collumn * spriteWidht;
 		yPos = row * spriteHeight;
+	}
+	public void castle (ArrayList<Piece> pieceList,boolean movedRight) {
+		if(movedRight) {
+		for(Piece piece:pieceList) {
+			if(piece.getName()=="Rook"&& piece.getCollumn()==7 && piece.getIsWhite()==getIsWhite()) {
+				pieceList.add(new Rook(5, piece.getRow(), piece.getIsWhite(), 800, 800));
+				pieceList.remove(piece);
+				break;
+			}
+			}
+		}
+		if(!movedRight) {
+			for(Piece piece:pieceList) {
+				if(piece.getName()=="Rook"&& piece.getCollumn()==0 && piece.getIsWhite()==getIsWhite()) {
+					pieceList.add(new Rook(3, piece.getRow(), piece.getIsWhite(), 800, 800));
+					pieceList.remove(piece);
+					break;
+				}
+				}
+			}
 	}
 
 	public void promotePawn(ArrayList<Piece> pieceList) {
