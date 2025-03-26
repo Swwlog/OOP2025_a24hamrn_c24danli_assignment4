@@ -31,6 +31,16 @@ public class King extends Piece {
 				|| ((Math.abs((getCollumn() - newCol)) + (Math.abs(getRow() - newRow))) == 1)) {
 			return true;
 		}
+		// casle
+		else if (!getHasMoved() && (getCollumn() - newCol) == -2 && (getRow() == newRow)
+				&& !targetBlockedStraitLines(newRow, newRow, pieceList)) {
+			for (Piece piece : pieceList) {
+				if ((piece.getCollumn() == getCollumn() + 3) && piece.getRow() == getRow()
+						&& !piece.getHasMoved()) {
+					return true;
+				}
+			}
+		}
 		return false;
 	}
 
