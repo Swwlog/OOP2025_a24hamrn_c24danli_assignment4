@@ -1,5 +1,6 @@
 package Main;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -7,6 +8,7 @@ import java.awt.Graphics2D;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.event.MouseInputListener;
 
@@ -22,23 +24,41 @@ public class GameScreen extends JPanel implements Runnable, MouseInputListener {
 	private Piece activePiece = null;
 	private boolean whitesTurn = true;
 	private Piece activePieceCopy = null;
+	private JLabel turnText;
+	private JLabel winStatus; 
 
 	public GameScreen() {
+		
 		heightScale = this.hight/8;
 		widthScale = this.width/8;
 		chessBoard = new ChessBoard(this.width, this.hight);
-		setPreferredSize(new Dimension(width, hight));
+		setPreferredSize(new Dimension(width + 200, hight));
 		setBackground(Color.darkGray);
 		initializePieces();
 		addMouseListener(this);
 		addMouseMotionListener(this);
 		// create and start thread for refresh
 
+		this.setLayout(null);
+		turnText = new JLabel();
+		turnText.setForeground(Color.WHITE);
+		this.add(turnText);
+		turnText.setBounds(this.width + 50,100,100,100);
+		
+		winStatus = new JLabel();
+		winStatus.setForeground(Color.WHITE);
+		this.add(winStatus);
+		winStatus.setBounds(this.width + 50,turnText.getLocation().y + 100,100,100);
 	}
 
 // paints board and pieces to JPanel
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
+		if(whitesTurn) {
+			turnText.setText("Whites turn");
+		}else {
+			turnText.setText("Blacks turn");
+		}
 		Graphics2D g2 = (Graphics2D) g;
 		chessBoard.draw(g2);
 		if (activePiece != null) {
@@ -50,7 +70,6 @@ public class GameScreen extends JPanel implements Runnable, MouseInputListener {
 							g2.fillRect(x * widthScale, y * heightScale, widthScale, heightScale);
 						}
 					}
-
 				}
 			}
 		}
@@ -137,15 +156,18 @@ public class GameScreen extends JPanel implements Runnable, MouseInputListener {
 	private void winMessage() {
 
 		if (!isChecked(pieceList) || pieceList.size() == 2) {
-			System.out.println("DRAW");
+			winStatus.setText("DRAW");
 			return;
 		}
 
 		if (!whitesTurn) {
+			winStatus.setText("WHITE WON");
 			System.out.println("WHITE WON");
 		} else if (whitesTurn) {
+			winStatus.setText("BLACK WON");
 			System.out.println("BLACK WON");
 		}
+		refresh.interrupt();
 
 	}
 
