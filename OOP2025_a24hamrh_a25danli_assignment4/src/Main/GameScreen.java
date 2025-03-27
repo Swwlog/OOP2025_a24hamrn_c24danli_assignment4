@@ -14,6 +14,8 @@ public class GameScreen extends JPanel implements Runnable, MouseInputListener {
 	private static ChessBoard chessBoard;
 	private int width = 800;
 	private int hight = 800;
+	private int heightScale;
+	private int widthScale;
 	private Thread refresh;
 	private ArrayList<Piece> pieceList = new ArrayList<>();
 	private ArrayList<Piece> pieceListCopy = new ArrayList<>();
@@ -22,6 +24,8 @@ public class GameScreen extends JPanel implements Runnable, MouseInputListener {
 	private Piece activePieceCopy = null;
 
 	public GameScreen() {
+		heightScale = this.hight/8;
+		widthScale = this.width/8;
 		chessBoard = new ChessBoard(this.width, this.hight);
 		setPreferredSize(new Dimension(width, hight));
 		setBackground(Color.darkGray);
@@ -42,8 +46,8 @@ public class GameScreen extends JPanel implements Runnable, MouseInputListener {
 				for (int x = 0; x < 8; x++) {
 					if (activePiece.validMove(x, y, pieceList) == true) {
 						if (simulateMoveLegal(x, y)) {
-							g2.setColor(Color.GREEN);
-							g2.fillRect(x * 100, y * 100, 100, 100);
+							g2.setColor(Color.decode("#85A785"));
+							g2.fillRect(x * widthScale, y * heightScale, widthScale, heightScale);
 						}
 					}
 
@@ -130,54 +134,27 @@ public class GameScreen extends JPanel implements Runnable, MouseInputListener {
 		}
 	}
 
+	private void winMessage() {
+
+		if (!isChecked(pieceList) || pieceList.size() == 2) {
+			System.out.println("DRAW");
+			return;
+		}
+
+		if (!whitesTurn) {
+			System.out.println("WHITE WON");
+		} else if (whitesTurn) {
+			System.out.println("BLACK WON");
+		}
+
+	}
+
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		System.out.println(e.getX() / 100);
-		System.out.println(e.getY() / 100);
-		if (activePiece != null && activePiece.validMove(e.getX() / 100, e.getY() / 100, pieceList)) {
 
-			if (simulateMoveLegal(e.getX() / 100, e.getY() / 100)) {
-
-				activePiece.movePiece(e.getX() / 100, e.getY() / 100, pieceList);
-				activePiece.capturePiece(e.getX() / 100, e.getY() / 100, pieceList);
-				if (whitesTurn == true) {
-					whitesTurn = false;
-				} else {
-					whitesTurn = true;
-				}
-				checkmate();
-				activePiece = null;
-			}
-
-		}
-
-		else if (activePiece == null) {
-			for (Piece piece : pieceList) {
-				if (((piece.getCollumn() == e.getX() / 100) && piece.getRow() == e.getY() / 100)
-						&& piece.getIsWhite() == whitesTurn) {
-					activePiece = piece;
-					System.out.println("piece choosen");
-
-				}
-			}
-		} else {
-			for (Piece piece : pieceList) {
-				if ((piece.getCollumn() == e.getX() / 100) && piece.getRow() == e.getY() / 100) {
-					if (piece.getIsWhite() == activePiece.getIsWhite()) {
-						activePiece = piece;
-					}
-
-				}
-			}
-		}
 	}
 
 	public boolean checkmate() {
-		if (!isChecked(pieceList)) {
-			System.out.println("Not in check stage 1");
-			return false;
-		}
-
 		for (Piece piece : pieceList) {
 			activePiece = piece;
 			if (piece.getIsWhite() == whitesTurn) {
@@ -191,20 +168,54 @@ public class GameScreen extends JPanel implements Runnable, MouseInputListener {
 								System.out.println("can move");
 								return false;
 							}
-
 						}
 					}
 				}
 			}
 		}
-		System.out.println("YOU WON");
+		winMessage();
 		return true;
 	}
 
 	@Override
 	public void mousePressed(MouseEvent e) {
 		// TODO Auto-generated method stub
+		if (activePiece != null && activePiece.validMove(e.getX() / widthScale, e.getY() / heightScale, pieceList)) {
 
+			if (simulateMoveLegal(e.getX() / widthScale, e.getY() / heightScale)) {
+
+				activePiece.movePiece(e.getX() / widthScale, e.getY() / heightScale, pieceList);
+				activePiece.capturePiece(e.getX() / widthScale, e.getY() / heightScale, pieceList);
+				if (whitesTurn == true) {
+					whitesTurn = false;
+				} else {
+					whitesTurn = true;
+				}
+				checkmate();
+				activePiece = null;
+			}
+
+		}
+
+		else if (activePiece == null) {
+			for (Piece piece : pieceList) {
+				if (((piece.getCollumn() == e.getX() / widthScale) && piece.getRow() == e.getY() / heightScale)
+						&& piece.getIsWhite() == whitesTurn) {
+					activePiece = piece;
+					System.out.println("piece choosen");
+
+				}
+			}
+		} else {
+			for (Piece piece : pieceList) {
+				if ((piece.getCollumn() == e.getX() / widthScale) && piece.getRow() == e.getY() / heightScale) {
+					if (piece.getIsWhite() == activePiece.getIsWhite()) {
+						activePiece = piece;
+					}
+
+				}
+			}
+		}
 	}
 
 	@Override
@@ -258,7 +269,6 @@ public class GameScreen extends JPanel implements Runnable, MouseInputListener {
 		}
 		for (Piece piece : list) {
 			if (piece.getIsWhite() != whitesTurn && piece.validMove(king.getCollumn(), king.getRow(), list) == true) {
-				System.out.println("King Checked");
 				return true;
 			}
 
