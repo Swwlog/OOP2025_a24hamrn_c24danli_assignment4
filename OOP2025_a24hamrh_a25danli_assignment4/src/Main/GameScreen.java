@@ -1,8 +1,8 @@
 package Main;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.MouseEvent;
@@ -15,7 +15,7 @@ import javax.swing.event.MouseInputListener;
 public class GameScreen extends JPanel implements Runnable, MouseInputListener {
 	private static ChessBoard chessBoard;
 	private int width = 800;
-	private int hight = 800;
+	private int height = 800;
 	private int heightScale;
 	private int widthScale;
 	private Thread refresh;
@@ -29,10 +29,10 @@ public class GameScreen extends JPanel implements Runnable, MouseInputListener {
 
 	public GameScreen() {
 		
-		heightScale = this.hight/8;
+		heightScale = this.height/8;
 		widthScale = this.width/8;
-		chessBoard = new ChessBoard(this.width, this.hight);
-		setPreferredSize(new Dimension(width + 200, hight));
+		chessBoard = new ChessBoard(this.width, this.height);
+		setPreferredSize(new Dimension(width + 200, height));
 		setBackground(Color.darkGray);
 		initializePieces();
 		addMouseListener(this);
@@ -43,12 +43,15 @@ public class GameScreen extends JPanel implements Runnable, MouseInputListener {
 		turnText = new JLabel();
 		turnText.setForeground(Color.WHITE);
 		this.add(turnText);
-		turnText.setBounds(this.width + 50,100,100,100);
+		turnText.setBounds(this.width + 50,100,200,200);
+		turnText.setFont(new Font("Times New Roman", Font.PLAIN, 20));
+		
 		
 		winStatus = new JLabel();
 		winStatus.setForeground(Color.WHITE);
 		this.add(winStatus);
-		winStatus.setBounds(this.width + 50,turnText.getLocation().y + 100,100,100);
+		winStatus.setBounds(this.width + 50,turnText.getLocation().y + 100,200,200);
+		winStatus.setFont(new Font("Times New Roman", Font.PLAIN, 20));
 	}
 
 // paints board and pieces to JPanel
@@ -94,55 +97,55 @@ public class GameScreen extends JPanel implements Runnable, MouseInputListener {
 
 	// test all pieces should be here add to try pieces as they are made.
 	// Add widht and hight as argument for scaling
-	public void initializePieces() {
+	private void initializePieces() {
 		// White Pieces
-		pieceList.add(new Rook(7, 7, true, this.width, this.hight));
-		pieceList.add(new Rook(0, 7, true, this.width, this.hight));
-		pieceList.add(new Knight(1, 7, true, this.width, this.hight));
-		pieceList.add(new Knight(6, 7, true, this.width, this.hight));
-		pieceList.add(new Bishop(2, 7, true, this.width, this.hight));
-		pieceList.add(new Bishop(5, 7, true, this.width, this.hight));
-		pieceList.add(new King(4, 7, true, this.width, this.hight));
-		pieceList.add(new Queen(3, 7, true, this.width, this.hight));
+		pieceList.add(new Rook(7, 7, true, this.width, this.height));
+		pieceList.add(new Rook(0, 7, true, this.width, this.height));
+		pieceList.add(new Knight(1, 7, true, this.width, this.height));
+		pieceList.add(new Knight(6, 7, true, this.width, this.height));
+		pieceList.add(new Bishop(2, 7, true, this.width, this.height));
+		pieceList.add(new Bishop(5, 7, true, this.width, this.height));
+		pieceList.add(new King(4, 7, true, this.width, this.height));
+		pieceList.add(new Queen(3, 7, true, this.width, this.height));
 		for (int i = 0; i < 8; i++) {
-			pieceList.add(new Pawn(i, 6, true, this.width, this.hight));
+			pieceList.add(new Pawn(i, 6, true, this.width, this.height));
 		}
 
 		// Black Pieces
-		pieceList.add(new Rook(7, 0, false, this.width, this.hight));
-		pieceList.add(new Rook(0, 0, false, this.width, this.hight));
-		pieceList.add(new Knight(1, 0, false, this.width, this.hight));
-		pieceList.add(new Knight(6, 0, false, this.width, this.hight));
-		pieceList.add(new Bishop(2, 0, false, this.width, this.hight));
-		pieceList.add(new Bishop(5, 0, false, this.width, this.hight));
-		pieceList.add(new King(4, 0, false, this.width, this.hight));
-		pieceList.add(new Queen(3, 0, false, this.width, this.hight));
+		pieceList.add(new Rook(7, 0, false, this.width, this.height));
+		pieceList.add(new Rook(0, 0, false, this.width, this.height));
+		pieceList.add(new Knight(1, 0, false, this.width, this.height));
+		pieceList.add(new Knight(6, 0, false, this.width, this.height));
+		pieceList.add(new Bishop(2, 0, false, this.width, this.height));
+		pieceList.add(new Bishop(5, 0, false, this.width, this.height));
+		pieceList.add(new King(4, 0, false, this.width, this.height));
+		pieceList.add(new Queen(3, 0, false, this.width, this.height));
 		for (int i = 0; i < 8; i++) {
-			pieceList.add(new Pawn(i, 1, false, this.width, this.hight));
+			pieceList.add(new Pawn(i, 1, false, this.width, this.height));
 		}
 	}
 
-	public void copyList(ArrayList<Piece> copyFrom, ArrayList<Piece> copyTo) {
+	private void copyList(ArrayList<Piece> copyFrom, ArrayList<Piece> copyTo) {
 		copyTo.clear();
 		for (Piece piece : copyFrom) {
 			switch (piece.getName()) {
 			case "Rook":
-				copyTo.add(new Rook(piece.getCollumn(), piece.getRow(), piece.getIsWhite(), this.width, this.hight));
+				copyTo.add(new Rook(piece.getCollumn(), piece.getRow(), piece.getIsWhite(), this.width, this.height));
 				break;
 			case "Pawn":
-				copyTo.add(new Pawn(piece.getCollumn(), piece.getRow(), piece.getIsWhite(), this.width, this.hight));
+				copyTo.add(new Pawn(piece.getCollumn(), piece.getRow(), piece.getIsWhite(), this.width, this.height));
 				break;
 			case "Knight":
-				copyTo.add(new Knight(piece.getCollumn(), piece.getRow(), piece.getIsWhite(), this.width, this.hight));
+				copyTo.add(new Knight(piece.getCollumn(), piece.getRow(), piece.getIsWhite(), this.width, this.height));
 				break;
 			case "Queen":
-				copyTo.add(new Queen(piece.getCollumn(), piece.getRow(), piece.getIsWhite(), this.width, this.hight));
+				copyTo.add(new Queen(piece.getCollumn(), piece.getRow(), piece.getIsWhite(), this.width, this.height));
 				break;
 			case "King":
-				copyTo.add(new King(piece.getCollumn(), piece.getRow(), piece.getIsWhite(), this.width, this.hight));
+				copyTo.add(new King(piece.getCollumn(), piece.getRow(), piece.getIsWhite(), this.width, this.height));
 				break;
 			case "Bishop":
-				copyTo.add(new Bishop(piece.getCollumn(), piece.getRow(), piece.getIsWhite(), this.width, this.hight));
+				copyTo.add(new Bishop(piece.getCollumn(), piece.getRow(), piece.getIsWhite(), this.width, this.height));
 				break;
 			}
 		}
@@ -156,16 +159,14 @@ public class GameScreen extends JPanel implements Runnable, MouseInputListener {
 	private void winMessage() {
 
 		if (!isChecked(pieceList) || pieceList.size() == 2) {
-			winStatus.setText("DRAW");
+			winStatus.setText("REME");
 			return;
 		}
 
 		if (!whitesTurn) {
-			winStatus.setText("WHITE WON");
-			System.out.println("WHITE WON");
+			winStatus.setText("<html> Checkmate <br> WHITE WON! </html>");
 		} else if (whitesTurn) {
-			winStatus.setText("BLACK WON");
-			System.out.println("BLACK WON");
+			winStatus.setText("<html> Checkmate <br> BLACK WON! </html>");
 		}
 		refresh.interrupt();
 
@@ -176,7 +177,7 @@ public class GameScreen extends JPanel implements Runnable, MouseInputListener {
 
 	}
 
-	public boolean checkmate() {
+	private boolean checkmate() {
 		for (Piece piece : pieceList) {
 			activePiece = piece;
 			if (piece.getIsWhite() == whitesTurn) {
@@ -270,7 +271,7 @@ public class GameScreen extends JPanel implements Runnable, MouseInputListener {
 
 	}
 
-	public boolean simulateMoveLegal(int col, int row) {
+	private boolean simulateMoveLegal(int col, int row) {
 		copyList(pieceList, pieceListCopy);
 		activePieceCopy.movePiece(col, row, pieceListCopy);
 		activePieceCopy.capturePiece(col, row, pieceListCopy);
@@ -281,7 +282,7 @@ public class GameScreen extends JPanel implements Runnable, MouseInputListener {
 		return false;
 	}
 
-	public boolean isChecked(ArrayList<Piece> list) {
+	private boolean isChecked(ArrayList<Piece> list) {
 		Piece king = null;
 		for (Piece piece : list) {
 			if (piece.getName() == "King" && piece.getIsWhite() == whitesTurn) {
@@ -291,10 +292,12 @@ public class GameScreen extends JPanel implements Runnable, MouseInputListener {
 		}
 		for (Piece piece : list) {
 			if (piece.getIsWhite() != whitesTurn && piece.validMove(king.getCollumn(), king.getRow(), list) == true) {
+				this.winStatus.setText("CHECKED");
 				return true;
 			}
 
 		}
+		this.winStatus.setText("");
 		return false;
 	}
 
