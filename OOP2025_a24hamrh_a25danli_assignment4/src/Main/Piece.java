@@ -29,7 +29,7 @@ public class Piece {
 		this.spriteHeight = height / 8;
 		xPos = collumn * spriteWidht;
 		yPos = row * spriteHeight;
-		this.hasMoved=false;
+		this.hasMoved = false;
 	}
 
 	public void setSprite(Image sprite) {
@@ -66,14 +66,17 @@ public class Piece {
 		return isWhite;
 
 	}
+
 	public boolean getHasMoved() {
 		return hasMoved;
 	}
- // for subclass to Override
+
+	// for subclass to Override
 	public boolean validMove(int newCol, int newRow, ArrayList<Piece> pieceList) {
 
 		return false;
 	}
+
 	// for subclass to Override
 	public String getName() {
 		return name;
@@ -106,20 +109,19 @@ public class Piece {
 		}
 	}
 
-	public void movePiece(int collumn, int row,ArrayList<Piece> pieceList) {
-		if (this.getName()=="King" && this.collumn-collumn==-2) {
-			castle(pieceList,true);
+	public void movePiece(int collumn, int row, ArrayList<Piece> pieceList) {
+		if (this.getName() == "King" && this.collumn - collumn == -2) {
+			castle(pieceList, true);
 		}
-		if (this.getName()=="King" && this.collumn-collumn==2) {
-			castle(pieceList,false);
+		if (this.getName() == "King" && this.collumn - collumn == 2) {
+			castle(pieceList, false);
 		}
-		
+
 		this.collumn = collumn;
 		this.row = row;
-		this.hasMoved=true;
-		if(this.getName()=="Pawn"&&(this.getRow()==7||this.getRow()==0)) {
-		promotePawn(pieceList);
-		// if king move +/- 2  run castle
+		this.hasMoved = true;
+		if (this.getName() == "Pawn" && (this.getRow() == 7 || this.getRow() == 0)) {
+			promotePawn(pieceList);
 		}
 		uppdateXYPos();
 	}
@@ -128,33 +130,35 @@ public class Piece {
 		xPos = collumn * spriteWidht;
 		yPos = row * spriteHeight;
 	}
-	public void castle (ArrayList<Piece> pieceList,boolean movedRight) {
-		if(movedRight) {
-		for(Piece piece:pieceList) {
-			if(piece.getName()=="Rook"&& piece.getCollumn()==7 && piece.getIsWhite()==getIsWhite()) {
-				pieceList.add(new Rook(5, piece.getRow(), piece.getIsWhite(), 800, 800));
-				pieceList.remove(piece);
-				break;
-			}
-			}
-		}
-		if(!movedRight) {
-			for(Piece piece:pieceList) {
-				if(piece.getName()=="Rook"&& piece.getCollumn()==0 && piece.getIsWhite()==getIsWhite()) {
-					pieceList.add(new Rook(3, piece.getRow(), piece.getIsWhite(), 800, 800));
+
+	public void castle(ArrayList<Piece> pieceList, boolean movedRight) {
+		if (movedRight) { // castling to the Right!!
+			for (Piece piece : pieceList) {
+				if (piece.getName() == "Rook" && piece.getCollumn() == 7 && piece.getIsWhite() == getIsWhite()) {
+					pieceList.add(new Rook(5, piece.getRow(), piece.getIsWhite(), piece.spriteWidht * 8,
+							piece.spriteHeight * 8));
 					pieceList.remove(piece);
 					break;
 				}
+			}
+		}
+		if (!movedRight) { // castling to the Left!!
+			for (Piece piece : pieceList) {
+				if (piece.getName() == "Rook" && piece.getCollumn() == 0 && piece.getIsWhite() == getIsWhite()) {
+					pieceList.add(new Rook(3, piece.getRow(), piece.getIsWhite(), piece.spriteWidht * 8,
+							piece.spriteHeight * 8));
+					pieceList.remove(piece);
+					break;
 				}
 			}
+		}
+	}
+		// Promote Pawn only queen now, add choice for other pieces.
+	public void promotePawn(ArrayList<Piece> pieceList) {
+		pieceList.add(new Queen(this.getCollumn(), this.getRow(), this.getIsWhite(), this.spriteWidht*8, this.spriteHeight*8));
+		pieceList.remove(this);
 	}
 
-	public void promotePawn(ArrayList<Piece> pieceList) {
-		pieceList.add(new Queen(this.getCollumn(), this.getRow(), this.getIsWhite(), 800, 800));
-		pieceList.remove(this);
-			System.out.println("PROMOTE");
-		}
-	
 	public boolean targetBlockedDiagonalLines(int newCol, int newRow, ArrayList<Piece> pieceList) {
 		// if Diagonal up
 		if (newRow < this.getRow()) {
@@ -162,7 +166,7 @@ public class Piece {
 			for (int i = this.getCollumn() - 1; i > newCol; i--) {
 				int ratio = Math.abs(i - this.getCollumn());
 				for (Piece piece : pieceList) {
-					if (i == piece.getCollumn() && this.getRow()-ratio == piece.getRow()) {
+					if (i == piece.getCollumn() && this.getRow() - ratio == piece.getRow()) {
 						return true;
 					}
 				}
@@ -171,29 +175,29 @@ public class Piece {
 			for (int i = this.getCollumn() + 1; i < newCol; i++) {
 				int ratio = Math.abs(i - this.getCollumn());
 				for (Piece piece : pieceList) {
-					if (i == piece.getCollumn() && this.getRow()-ratio == piece.getRow()) {
+					if (i == piece.getCollumn() && this.getRow() - ratio == piece.getRow()) {
 						return true;
 					}
 				}
 			}
 		}
-		//if Diagonal down
+		// if Diagonal down
 		if (newRow > this.getRow()) {
 			// looking diagonal down rights
 			for (int i = this.getCollumn() + 1; i < newCol; i++) {
 				int ratio = Math.abs(i - this.getCollumn());
 				for (Piece piece : pieceList) {
-					if (i == piece.getCollumn() && this.getRow()+ratio == piece.getRow()) {
+					if (i == piece.getCollumn() && this.getRow() + ratio == piece.getRow()) {
 						return true;
 					}
 				}
 			}
-		
+
 			// looking diagonal down left
 			for (int i = this.getCollumn() - 1; i > newCol; i--) {
 				int ratio = Math.abs(i - this.getCollumn());
 				for (Piece piece : pieceList) {
-					if (i == piece.getCollumn() && this.getRow()+ratio == piece.getRow()) {
+					if (i == piece.getCollumn() && this.getRow() + ratio == piece.getRow()) {
 						return true;
 					}
 				}
@@ -240,6 +244,6 @@ public class Piece {
 
 		}
 		return false;
-	}	
+	}
 
 }
